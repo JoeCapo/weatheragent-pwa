@@ -54,11 +54,11 @@ export function WeatherCard() {
       <div className="bg-gradient-to-br from-primary-500 to-primary-700 p-8 text-white">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-3xl font-bold flex items-center">
-              <MapPinIcon className="h-6 w-6 mr-2 opacity-80" />
-              {currentLocation.name}
+            <h2 className="text-2xl sm:text-3xl font-bold flex items-center text-left">
+              <MapPinIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 opacity-80 flex-shrink-0" />
+              <span className="truncate max-w-[200px] sm:max-w-none">{currentLocation.name}</span>
             </h2>
-            <p className="text-primary-100 mt-1 capitalize text-lg">{currentPeriod.shortForecast}</p>
+            <p className="text-primary-100 mt-1 capitalize text-base sm:text-lg text-left">{currentPeriod.shortForecast}</p>
           </div>
           <button 
             onClick={refreshWeather}
@@ -70,20 +70,25 @@ export function WeatherCard() {
           </button>
         </div>
 
-        <div className="mt-8 flex items-center justify-between">
-          <div className="flex items-center space-x-6">
+        <div className="mt-6 sm:mt-8 flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <img 
               src={currentPeriod.icon.replace('small', 'large')} 
               alt={currentPeriod.shortForecast} 
-              className="w-24 h-24 object-contain drop-shadow-lg"
+              className="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-lg self-center sm:self-auto"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
             <div>
-              <div className="text-7xl font-bold tracking-tighter shadow-sm">
+              <div className="text-6xl sm:text-7xl font-bold tracking-tighter shadow-sm text-center sm:text-left">
                 {currentPeriod.temperature}&deg;{currentPeriod.temperatureUnit}
               </div>
-              <div className="text-primary-100 mt-2 text-lg">
-                Wind: {currentPeriod.windSpeed} {currentPeriod.windDirection}
+              <div className="text-primary-100 mt-2 text-base sm:text-lg flex flex-col sm:flex-row sm:space-x-4">
+                <span>Wind: {currentPeriod.windSpeed} {currentPeriod.windDirection}</span>
+                {currentPeriod.probabilityOfPrecipitation?.value != null && (
+                  <span className="mt-1 sm:mt-0 flex items-center">
+                    <span className="opacity-80 mr-1">Precip:</span> {currentPeriod.probabilityOfPrecipitation.value}%
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -119,15 +124,18 @@ export function WeatherCard() {
         <div className="space-y-3">
           {nextPeriods.map((day, idx) => (
             <div key={idx} className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition">
-              <div className="w-1/3 text-left font-medium text-gray-700">{day.name}</div>
+              <div className="w-1/3 text-left font-medium text-gray-700 truncate pr-2">{day.name}</div>
               <div className="w-1/3 flex justify-center">
                 <div className="flex items-center text-gray-500 text-sm">
-                  <img src={day.icon} alt={day.shortForecast} className="w-8 h-8 mr-2" />
-                  <span className="truncate max-w-[100px]" title={day.shortForecast}>{day.shortForecast}</span>
+                  <img src={day.icon} alt={day.shortForecast} className="w-6 h-6 sm:w-8 sm:h-8 mr-1 sm:mr-2" />
+                  <span className="truncate max-w-[60px] sm:max-w-[100px]" title={day.shortForecast}>{day.shortForecast}</span>
                 </div>
               </div>
-              <div className="w-1/3 text-right font-bold text-gray-900 text-lg">
-                {day.temperature}&deg;
+              <div className="w-1/3 text-right font-bold text-gray-900 text-base sm:text-lg flex justify-end items-center space-x-2">
+                {day.probabilityOfPrecipitation?.value ? (
+                  <span className="text-xs text-blue-500 font-normal mr-2">{day.probabilityOfPrecipitation.value}%</span>
+                ) : null}
+                <span>{day.temperature}&deg;</span>
               </div>
             </div>
           ))}

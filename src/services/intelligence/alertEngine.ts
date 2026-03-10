@@ -55,7 +55,7 @@ export class AlertEngine {
         value = period.temperature;
         break;
       case 'precipitation':
-        value = period.probabilityOfPrecipitation || 0;
+        value = period.probabilityOfPrecipitation?.value || 0;
         break;
       case 'wind':
         // Extremely crude parsing of "10 to 15 mph"

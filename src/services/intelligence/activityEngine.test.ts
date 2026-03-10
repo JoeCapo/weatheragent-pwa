@@ -11,8 +11,7 @@ describe('Activity Engine', () => {
       endTime: '',
       temperature: 72,
       temperatureUnit: 'F',
-      temperatureTrend: null,
-      probabilityOfPrecipitation: 0,
+      probabilityOfPrecipitation: { unitCode: 'percent', value: 0 },
       windSpeed: '5 mph',
       windDirection: 'W',
       icon: '',
@@ -21,7 +20,7 @@ describe('Activity Engine', () => {
     };
 
     const recs = activityEngine.generateRecommendations(mockPeriod);
-    
+
     // With 72F and Sunny, Hiking/Running should definitely be recommended and score well.
     expect(recs.length).toBeGreaterThan(0);
     const hiking = recs.find(r => r.activity === 'Hiking');
@@ -37,8 +36,7 @@ describe('Activity Engine', () => {
       endTime: '',
       temperature: 85,
       temperatureUnit: 'F',
-      temperatureTrend: null,
-      probabilityOfPrecipitation: 90,
+      probabilityOfPrecipitation: { unitCode: 'percent', value: 90 },
       windSpeed: '20 mph',
       windDirection: 'SE',
       icon: '',
@@ -47,7 +45,7 @@ describe('Activity Engine', () => {
     };
 
     const recs = activityEngine.generateRecommendations(mockPeriod);
-    
+
     // Precipitation and high winds should filter out most outdoor activities
     // It should recommend 'Reading Indoors'
     expect(recs.length).toBeGreaterThan(0);

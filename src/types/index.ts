@@ -22,7 +22,7 @@ export interface ForecastPeriod {
   icon: string;
   shortForecast: string;
   detailedForecast: string;
-  probabilityOfPrecipitation?: number;
+  probabilityOfPrecipitation?: { unitCode: string; value: number | null };
 }
 
 export interface Forecast {

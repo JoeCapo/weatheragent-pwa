@@ -20,7 +20,7 @@ const ACTIVITY_RULES: ActivityRule[] = [
 export class ActivityEngine {
   generateRecommendations(period: ForecastPeriod): ActivityRecommendation[] {
     const temp = period.temperature;
-    const precip = period.probabilityOfPrecipitation || 0;
+    const precip = period.probabilityOfPrecipitation?.value || 0;
     
     const windMatches = period.windSpeed.match(/(\d+)/g);
     const wind = windMatches ? Math.max(...windMatches.map(Number)) : 0;
