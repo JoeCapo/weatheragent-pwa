@@ -26,6 +26,7 @@ export function SettingsModal() {
         onClick={() => setIsOpen(true)}
         className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-full transition ml-2"
         title="Settings"
+        aria-label="Open Settings"
       >
         <CogIcon className="h-6 w-6" />
       </button>
@@ -53,6 +54,8 @@ export function SettingsModal() {
                 </div>
                 <button 
                   onClick={handleNotificationToggle}
+                  aria-label="Toggle notifications"
+                  aria-pressed={preferences.notificationsEnabled}
                   className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${preferences.notificationsEnabled ? 'bg-primary-500' : 'bg-gray-200'}`}
                 >
                   <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${preferences.notificationsEnabled ? 'translate-x-5' : 'translate-x-0'}`}></span>

@@ -64,6 +64,7 @@ export function WeatherCard() {
             onClick={refreshWeather}
             className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition group"
             title="Refresh weather"
+            aria-label="Refresh weather"
           >
             <ArrowPathIcon className={`h-5 w-5 ${isLoading ? 'animate-spin text-white' : 'text-primary-100 group-hover:text-white'}`} />
           </button>

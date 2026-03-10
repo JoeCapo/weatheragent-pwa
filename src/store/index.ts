@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AppState, Location, Forecast, WeatherAlert, UserPreferences, AlertRule } from '../types';
+import { AppState, Location, UserPreferences } from '../types';
 import { dbService } from '../services/storage/indexedDBService';
 import { weatherService } from '../services/api/weatherService';
 import { locationService } from '../services/api/locationService';
