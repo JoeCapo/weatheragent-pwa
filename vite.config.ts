@@ -14,7 +14,6 @@ export default defineConfig({
         name: 'WeatherAgent',
         short_name: 'WeatherAgent',
         description: 'Intelligent weather forecasting',
-        purpose: 'any maskable',
         theme_color: '#0ea5e9',
         background_color: '#ffffff',
         display: 'standalone',
