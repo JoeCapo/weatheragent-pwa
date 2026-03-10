@@ -141,23 +141,21 @@ export function WeatherCard() {
         <div className="space-y-3">
           {nextPeriods.map((day, idx) => (
             <div key={idx} className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition">
-              <div className="w-1/3 text-left font-medium text-gray-700 truncate pr-2">{day.name}</div>
-              <div className="w-1/3 flex justify-center">
-                <div className="flex items-center text-gray-500 text-sm">
-                  <img src={day.icon} alt={day.shortForecast} className="w-6 h-6 sm:w-8 sm:h-8 mr-1 sm:mr-2" />
-                  <span className="truncate max-w-[60px] sm:max-w-[100px]" title={day.shortForecast}>{day.shortForecast}</span>
-                </div>
+              <div className="w-28 sm:w-1/4 text-left font-medium text-gray-700 truncate pr-2 flex-shrink-0">{day.name}</div>
+              <div className="flex-1 flex items-center text-gray-500 text-sm min-w-0 pr-2">
+                <img src={day.icon} alt={day.shortForecast} className="w-6 h-6 sm:w-8 sm:h-8 mr-2 flex-shrink-0" />
+                <span className="truncate" title={day.shortForecast}>{day.shortForecast}</span>
               </div>
-              <div className="w-1/3 text-right font-bold text-gray-900 text-base sm:text-lg flex justify-end items-center space-x-2">
-                <div className="flex flex-col text-right mr-1">
-                  {getPrecipDisplay(day) && (
-                     <span className="text-xs text-blue-600 font-medium whitespace-nowrap bg-blue-50 px-2 py-1 rounded-full inline-flex items-center">
-                       <span className="mr-1">{getPrecipDisplay(day)!.icon}</span>
-                       {getPrecipDisplay(day)!.text}
-                     </span>
-                  )}
-                </div>
-                <span>{day.temperature}&deg;</span>
+              <div className="w-24 sm:w-32 flex justify-end items-center flex-shrink-0 pr-3 sm:pr-4">
+                {getPrecipDisplay(day) && (
+                   <span className="text-[10px] sm:text-xs text-blue-600 font-medium whitespace-nowrap bg-blue-50 px-2 py-1 rounded-full inline-flex items-center">
+                     <span className="mr-1 hidden sm:inline">{getPrecipDisplay(day)!.icon}</span>
+                     {getPrecipDisplay(day)!.text}
+                   </span>
+                )}
+              </div>
+              <div className="w-10 text-right font-bold text-gray-900 text-base sm:text-lg flex-shrink-0">
+                {day.temperature}&deg;
               </div>
             </div>
           ))}
