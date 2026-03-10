@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect } from 'react';
+import { SearchBar } from './components/weather/SearchBar';
+import { WeatherCard } from './components/weather/WeatherCard';
+import { LocationList } from './components/weather/LocationList';
+import { useWeatherStore } from './store';
+import { CloudIcon } from '@heroicons/react/24/solid';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { initApp } = useWeatherStore();
+
+  useEffect(() => {
+    initApp();
+  }, [initApp]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-primary-200 selection:text-primary-900">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center">
+            <CloudIcon className="h-8 w-8 text-primary-500 mr-2" />
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400 tracking-tight">
+              WeatherAgent
+            </h1>
+          </div>
+          <div className="hidden sm:block flex-1 max-w-md ml-8">
+            <SearchBar />
+          </div>
+          <div className="flex items-center ml-auto">
+            <LocationList />
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div className="sm:hidden mb-6">
+          <SearchBar />
+        </div>
+        
+        <WeatherCard />
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
