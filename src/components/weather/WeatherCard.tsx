@@ -121,13 +121,27 @@ export function WeatherCard() {
           <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
             {hourly.map((hour, idx) => {
               const date = new Date(hour.startTime);
+              const prec = hour.probabilityOfPrecipitation?.value || 0;
               return (
-                <div key={idx} className="flex flex-col items-center justify-between min-w-[4.5rem] p-3 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-primary-50 transition">
-                  <span className="text-sm font-medium text-gray-500">
+                <div key={idx} className="flex flex-col items-center justify-start min-w-[5.5rem] sm:min-w-[6rem] p-3 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-primary-50 transition flex-shrink-0">
+                  <span className="text-sm font-medium text-gray-600 mb-2">
                     {date.toLocaleTimeString([], { hour: 'numeric' })}
                   </span>
-                  <img src={hour.icon} alt={hour.shortForecast} className="w-10 h-10 my-2" />
-                  <span className="text-lg font-bold text-gray-900">{hour.temperature}&deg;</span>
+                  <img src={hour.icon} alt={hour.shortForecast} className="w-10 h-10 sm:w-12 sm:h-12 mb-2" />
+                  <span className="text-lg font-bold text-gray-900 mb-2">{hour.temperature}&deg;</span>
+                  
+                  <div className="flex flex-col items-center w-full mt-auto space-y-1.5">
+                    {prec > 0 ? (
+                      <span className="text-[10px] sm:text-xs text-blue-600 font-medium bg-blue-100/50 px-2 py-0.5 rounded-full flex items-center">
+                        <span className="mr-1">💧</span>{prec}%
+                      </span>
+                    ) : (
+                      <span className="h-5"></span>
+                    )}
+                    <span className="text-[10px] text-gray-500 font-medium flex items-center text-center leading-tight">
+                      {hour.windDirection} {hour.windSpeed}
+                    </span>
+                  </div>
                 </div>
               );
             })}
