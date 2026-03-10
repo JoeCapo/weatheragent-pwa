@@ -1,5 +1,6 @@
 import { dbService } from '../storage/indexedDBService';
-import { Forecast, WeatherAlert } from '../../types';
+import { Forecast, WeatherAlert, ForecastPeriod } from '../../types';
+import { sumGridValuesForPeriod, mmToInches, extractPrecipType } from './nwsGridUtils';
 
 const NWS_API_BASE = import.meta.env.VITE_NWS_API_BASE || 'https://api.weather.gov';
 
@@ -60,18 +61,45 @@ export class WeatherService {
     const cached = await dbService.getCached<Forecast>(cacheKey);
     if (cached) return cached;
 
-    const [dailyRes, hourlyRes] = await Promise.all([
+    const [dailyRes, hourlyRes, rawGridRes] = await Promise.all([
       this.fetchWithRetry(`${NWS_API_BASE}/gridpoints/${gridId}/${gridX},${gridY}/forecast`),
-      this.fetchWithRetry(`${NWS_API_BASE}/gridpoints/${gridId}/${gridX},${gridY}/forecast/hourly`).catch(() => null)
+      this.fetchWithRetry(`${NWS_API_BASE}/gridpoints/${gridId}/${gridX},${gridY}/forecast/hourly`).catch(() => null),
+      this.fetchWithRetry(`${NWS_API_BASE}/gridpoints/${gridId}/${gridX},${gridY}`).catch(() => null)
     ]);
 
     const dailyData = await dailyRes.json();
     const hourlyData = hourlyRes ? await hourlyRes.json() : { properties: { periods: [] } };
+    const rawGridData = rawGridRes ? await rawGridRes.json() : null;
+
+    const enhancedPeriods = dailyData.properties.periods.map((period: ForecastPeriod) => {
+      let amount = 0;
+      const type = extractPrecipType(period.detailedForecast || period.shortForecast);
+
+      if (rawGridData?.properties) {
+        const pStart = new Date(period.startTime);
+        const pEnd = new Date(period.endTime);
+        
+        if (type === 'Snow') {
+           const snowMm = sumGridValuesForPeriod(pStart, pEnd, rawGridData.properties.snowfallAmount?.values || []);
+           // NWS snowfallAmount is typically in mm of snow, equivalent to mm water * 10, often API provides it as actual snow depth in mm
+           amount = mmToInches(snowMm);
+        } else {
+           const precipMm = sumGridValuesForPeriod(pStart, pEnd, rawGridData.properties.quantitativePrecipitation?.values || []);
+           amount = mmToInches(precipMm);
+        }
+      }
+
+      return {
+        ...period,
+        precipitationAmount: amount >= 0.01 ? Number(amount.toFixed(2)) : undefined,
+        precipitationType: type
+      };
+    });
 
     const forecast: Forecast = {
       locationId,
       generatedAt: new Date(),
-      periods: dailyData.properties.periods,
+      periods: enhancedPeriods,
       hourlyPeriods: hourlyData.properties.periods
     };
 

@@ -23,6 +23,8 @@ export interface ForecastPeriod {
   shortForecast: string;
   detailedForecast: string;
   probabilityOfPrecipitation?: { unitCode: string; value: number | null };
+  precipitationAmount?: number; // accumulated amount in inches
+  precipitationType?: string; // e.g. "Rain", "Snow"
 }
 
 export interface Forecast {

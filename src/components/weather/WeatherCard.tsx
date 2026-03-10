@@ -46,6 +46,20 @@ export function WeatherCard() {
   const nextPeriods = forecast.periods.slice(1, 8); 
   const hourly = forecast.hourlyPeriods?.slice(0, 12) || [];
 
+  const formatPrecip = (period: any) => {
+    const chance = period.probabilityOfPrecipitation?.value || 0;
+    const amount = period.precipitationAmount || 0;
+    const type = period.precipitationType || 'Precipitation';
+
+    if (chance === 0 && amount < 0.01) return null;
+
+    let text = `${chance}% chance of ${type}`;
+    if (amount >= 0.01) {
+      text += ` - ${amount}"`;
+    }
+    return text;
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto mt-6 bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 relative">
       {isLoading && <div className="absolute top-0 left-0 w-full h-1 bg-primary-500 animate-pulse"></div>}
@@ -82,11 +96,11 @@ export function WeatherCard() {
               <div className="text-6xl sm:text-7xl font-bold tracking-tighter shadow-sm text-center sm:text-left">
                 {currentPeriod.temperature}&deg;{currentPeriod.temperatureUnit}
               </div>
-              <div className="text-primary-100 mt-2 text-base sm:text-lg flex flex-col sm:flex-row sm:space-x-4">
-                <span>Wind: {currentPeriod.windSpeed} {currentPeriod.windDirection}</span>
-                {currentPeriod.probabilityOfPrecipitation?.value != null && (
+              <div className="text-primary-100 mt-2 text-sm sm:text-base flex flex-col sm:flex-row sm:space-x-4">
+                <span>Wind: {currentPeriod.windSpeed}</span>
+                {formatPrecip(currentPeriod) && (
                   <span className="mt-1 sm:mt-0 flex items-center">
-                    <span className="opacity-80 mr-1">Precip:</span> {currentPeriod.probabilityOfPrecipitation.value}%
+                    <span className="opacity-80 mr-1">Precip:</span> {formatPrecip(currentPeriod)}
                   </span>
                 )}
               </div>
@@ -132,9 +146,19 @@ export function WeatherCard() {
                 </div>
               </div>
               <div className="w-1/3 text-right font-bold text-gray-900 text-base sm:text-lg flex justify-end items-center space-x-2">
-                {day.probabilityOfPrecipitation?.value ? (
-                  <span className="text-xs text-blue-500 font-normal mr-2">{day.probabilityOfPrecipitation.value}%</span>
-                ) : null}
+                <div className="flex flex-col text-right mr-1">
+                  {formatPrecip(day) && (
+                     <span className="text-xs text-blue-500 font-medium whitespace-nowrap hidden sm:inline-block">
+                       {formatPrecip(day)}
+                     </span>
+                  )}
+                  {formatPrecip(day) && (
+                     <span className="text-xs text-blue-500 font-medium whitespace-nowrap sm:hidden inline-block">
+                       {day.probabilityOfPrecipitation?.value || 0}%
+                       {day.precipitationAmount ? ` - ${day.precipitationAmount}"` : ''}
+                     </span>
+                  )}
+                </div>
                 <span>{day.temperature}&deg;</span>
               </div>
             </div>
