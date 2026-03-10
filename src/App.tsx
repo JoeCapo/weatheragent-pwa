@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { SearchBar } from './components/weather/SearchBar';
 import { WeatherCard } from './components/weather/WeatherCard';
 import { LocationList } from './components/weather/LocationList';
+import { WeatherInsights } from './components/weather/WeatherInsights';
+import { SettingsModal } from './components/settings/SettingsModal';
 import { useWeatherStore } from './store';
 import { CloudIcon } from '@heroicons/react/24/solid';
 
@@ -27,6 +29,7 @@ function App() {
           </div>
           <div className="flex items-center ml-auto">
             <LocationList />
+            <SettingsModal />
           </div>
         </div>
       </header>
@@ -37,6 +40,7 @@ function App() {
         </div>
         
         <WeatherCard />
+        <WeatherInsights />
       </main>
     </div>
   );
