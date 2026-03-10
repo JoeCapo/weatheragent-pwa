@@ -120,8 +120,8 @@ export function WeatherMap() {
               url={radarUrl}
               opacity={opacity}
               zIndex={10}
-              maxNativeZoom={11} // Rainviewer tiles typically only go up to zoom level 11
-              maxZoom={18}       // Scale up the native 11 tiles for higher zooms
+              maxNativeZoom={7} // Rainviewer free tier only goes up to zoom level 7
+              maxZoom={18}      // Scale up the native 7 tiles for higher zooms
             />
           )}
           <Marker position={center}>
