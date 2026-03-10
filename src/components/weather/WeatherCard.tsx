@@ -1,6 +1,7 @@
 import React from 'react';
 import { useWeatherStore } from '../../store';
 import { MapPinIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { extractPrecipType } from '../../services/api/nwsGridUtils';
 
 export function WeatherCard() {
   const { currentLocation, forecasts, isLoading, error, refreshWeather, lastSync } = useWeatherStore();
@@ -46,18 +47,19 @@ export function WeatherCard() {
   const nextPeriods = forecast.periods.slice(1, 8); 
   const hourly = forecast.hourlyPeriods?.slice(0, 12) || [];
 
-  const formatPrecip = (period: any) => {
+  const getPrecipDisplay = (period: any) => {
     const chance = period.probabilityOfPrecipitation?.value || 0;
     const amount = period.precipitationAmount || 0;
-    const type = period.precipitationType || 'Precipitation';
+    const type = period.precipitationType || extractPrecipType(period.detailedForecast || period.shortForecast) || 'Precip';
 
     if (chance === 0 && amount < 0.01) return null;
 
-    let text = `${chance}% chance of ${type}`;
+    const icon = (type === 'Snow' || type === 'Ice') ? '❄️' : '💧';
+    let text = `${chance}% ${type}`;
     if (amount >= 0.01) {
-      text += ` - ${amount}"`;
+      text += ` (${amount}")`;
     }
-    return text;
+    return { text, icon };
   };
 
   return (
@@ -98,9 +100,10 @@ export function WeatherCard() {
               </div>
               <div className="text-primary-100 mt-2 text-sm sm:text-base flex flex-col sm:flex-row sm:space-x-4">
                 <span>Wind: {currentPeriod.windSpeed}</span>
-                {formatPrecip(currentPeriod) && (
-                  <span className="mt-1 sm:mt-0 flex items-center">
-                    <span className="opacity-80 mr-1">Precip:</span> {formatPrecip(currentPeriod)}
+                {getPrecipDisplay(currentPeriod) && (
+                  <span className="mt-1 sm:mt-0 flex items-center font-medium bg-white/20 px-2 py-0.5 rounded-full">
+                    <span className="mr-1.5">{getPrecipDisplay(currentPeriod)!.icon}</span>
+                    {getPrecipDisplay(currentPeriod)!.text}
                   </span>
                 )}
               </div>
@@ -147,15 +150,10 @@ export function WeatherCard() {
               </div>
               <div className="w-1/3 text-right font-bold text-gray-900 text-base sm:text-lg flex justify-end items-center space-x-2">
                 <div className="flex flex-col text-right mr-1">
-                  {formatPrecip(day) && (
-                     <span className="text-xs text-blue-500 font-medium whitespace-nowrap hidden sm:inline-block">
-                       {formatPrecip(day)}
-                     </span>
-                  )}
-                  {formatPrecip(day) && (
-                     <span className="text-xs text-blue-500 font-medium whitespace-nowrap sm:hidden inline-block">
-                       {day.probabilityOfPrecipitation?.value || 0}%
-                       {day.precipitationAmount ? ` - ${day.precipitationAmount}"` : ''}
+                  {getPrecipDisplay(day) && (
+                     <span className="text-xs text-blue-600 font-medium whitespace-nowrap bg-blue-50 px-2 py-1 rounded-full inline-flex items-center">
+                       <span className="mr-1">{getPrecipDisplay(day)!.icon}</span>
+                       {getPrecipDisplay(day)!.text}
                      </span>
                   )}
                 </div>
